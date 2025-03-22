@@ -1,0 +1,73 @@
+{
+  "name": "pino-transport-rotating-file",
+  "description": "Plugin for pino to transport logs to rotating files",
+  "keywords": ["pino", "transport", "rotating", "file", "log"],
+  "version": "1.0.0",
+  "license": "MIT",
+  "author": {
+    "name": "Mohammad Abu Mattar",
+    "email": "mohammad.khaled@outlook.com",
+    "url": "https://mkabumattar.github.io/"
+  },
+  "homepage": "https://github.com/MKAbuMattar/pino-transport-rotating-file#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MKAbuMattar/pino-transport-rotating-file.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MKAbuMattar/pino-transport-rotating-file/issues"
+  },
+  "scripts": {
+    "dev": "rimraf logs && tsx watch ./playground/index.ts",
+    "build:rollup": "rollup -c rollup.config.mjs",
+    "build": "rimraf lib && npm run build:rollup && rimraf lib/types",
+    "lint": "biome check ./src",
+    "lint:fix": "biome check ./src --fix",
+    "fmt": "biome format ./src",
+    "fmt:fix": "biome format --write ./src"
+  },
+  "peerDependencies": {
+    "pino": "9.6.0",
+    "pino-pretty": "13.0.0",
+    "rotating-file-stream": "3.2.6"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@rollup/plugin-typescript": "12.1.2",
+    "@types/node": "22.13.11",
+    "pino": "9.6.0",
+    "pino-pretty": "13.0.0",
+    "rimraf": "6.0.1",
+    "rollup": "4.36.0",
+    "rotating-file-stream": "3.2.6",
+    "tslib": "2.8.1",
+    "tsx": "4.19.3",
+    "typescript": "5.8.2"
+  },
+  "sideEffects": false,
+  "main": "lib/index.js",
+  "module": "lib/index.mjs",
+  "types": "index.d.ts",
+  "typings": "index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./lib/index.js",
+      "import": "./lib/index.mjs",
+      "types": "./index.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "./lib/index.d.ts",
+    "./lib/index.js",
+    "./lib/index.js.map",
+    "./lib/index.mjs",
+    "./lib/index.mjs.map",
+    "./index.d.ts"
+  ],
+  "support": {
+    "backing": {
+      "npm-funding": true
+    }
+  }
+}
