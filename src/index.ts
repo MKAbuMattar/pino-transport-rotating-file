@@ -2,12 +2,12 @@ import {Buffer} from 'node:buffer';
 import {createReadStream, createWriteStream} from 'node:fs';
 import {access, readdir, stat, unlink} from 'node:fs/promises';
 import {join} from 'node:path';
-import {Transform, type TransformCallback, pipeline} from 'node:stream';
+import {pipeline, Transform, type TransformCallback} from 'node:stream';
 import {promisify} from 'node:util';
-import {type ZlibOptions, createGzip} from 'node:zlib';
+import {createGzip, type ZlibOptions} from 'node:zlib';
 import build, {type OnUnknown} from 'pino-abstract-transport';
 import {prettyFactory} from 'pino-pretty';
-import {type RotatingFileStream, createStream} from 'rotating-file-stream';
+import {createStream, type RotatingFileStream} from 'rotating-file-stream';
 
 type CreateErrorLogger = {
   log: (message: string, error?: unknown) => void;
