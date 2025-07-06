@@ -1,7 +1,13 @@
 {
   "name": "pino-transport-rotating-file",
   "description": "Plugin for pino to transport logs to rotating files",
-  "keywords": ["pino", "transport", "rotating", "file", "log"],
+  "keywords": [
+    "pino",
+    "transport",
+    "rotating",
+    "file",
+    "log"
+  ],
   "version": "1.0.0",
   "license": "MIT",
   "author": {
@@ -22,7 +28,7 @@
     "build:rollup": "rollup -c rollup.config.mjs",
     "build": "rimraf lib && npm run build:rollup && rimraf lib/types",
     "lint": "biome check ./src",
-    "lint:fix": "biome check ./src --fix",
+    "lint:fix": "biome check --fix ./src",
     "fmt": "biome format ./src",
     "fmt:fix": "biome format --write ./src"
   },
@@ -32,13 +38,13 @@
     "rotating-file-stream": "3.2.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@rollup/plugin-typescript": "12.1.2",
-    "@types/node": "24.0.3",
+    "@biomejs/biome": "2.0.6",
+    "@rollup/plugin-typescript": "12.1.4",
+    "@types/node": "24.0.10",
     "pino": "9.7.0",
     "pino-pretty": "13.0.0",
     "rimraf": "6.0.1",
-    "rollup": "4.43.0",
+    "rollup": "4.44.2",
     "rotating-file-stream": "3.2.6",
     "tslib": "2.8.1",
     "tsx": "4.20.3",
