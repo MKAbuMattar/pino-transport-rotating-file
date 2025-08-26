@@ -8,7 +8,7 @@
     "file",
     "log"
   ],
-  "version": "1.0.0",
+  "version": "1.0.2",
   "license": "MIT",
   "author": {
     "name": "Mohammad Abu Mattar",
@@ -26,28 +26,28 @@
   "scripts": {
     "dev": "rimraf logs && tsx watch ./playground/index.ts",
     "build:rollup": "rollup -c rollup.config.mjs",
-    "build": "rimraf lib && npm run build:rollup && rimraf lib/types",
+    "build": "rimraf lib && pnpm run build:rollup && rimraf lib/types",
     "lint": "biome check ./src",
     "lint:fix": "biome check --fix ./src",
     "fmt": "biome format ./src",
     "fmt:fix": "biome format --write ./src"
   },
   "peerDependencies": {
-    "pino": "9.8.0",
+    "pino": "9.9.0",
     "pino-pretty": "13.1.1",
-    "rotating-file-stream": "3.2.6"
+    "rotating-file-stream": "3.2.7"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.1.4",
+    "@biomejs/biome": "2.2.2",
     "@rollup/plugin-typescript": "12.1.4",
-    "@types/node": "24.2.1",
-    "pino": "9.8.0",
+    "@types/node": "24.3.0",
+    "pino": "9.9.0",
     "pino-pretty": "13.1.1",
     "rimraf": "6.0.1",
-    "rollup": "4.46.2",
-    "rotating-file-stream": "3.2.6",
+    "rollup": "4.48.1",
+    "rotating-file-stream": "3.2.7",
     "tslib": "2.8.1",
-    "tsx": "4.20.3",
+    "tsx": "4.20.5",
     "typescript": "5.9.2"
   },
   "sideEffects": false,

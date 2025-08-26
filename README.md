@@ -169,8 +169,8 @@ The transport accepts the following options:
 |         `dir`          | `string`  |        **Required**         |                                               The directory where log files are stored.                                                |
 |       `filename`       | `string`  |            `app`            |                                                    The base filename for log files.                                                    |
 |       `enabled`        | `boolean` |           `true`            |                                                    Enable or disable the transport.                                                    |
-|         `size`         | `string`  |           `100K`            |                                     File size threshold for rotation (e.g., `100K`, `1M`, `10G`).                                      |
-|       `interval`       | `string`  |            `1d`             |                              Time interval for rotation (e.g., `1s`, `1m`, `1h`, `1d`, `1w`, `1M`, `1y`).                              |
+|         `size`         | `string`  |           `100K`            |                                 File size threshold for rotation (e.g., `100B`, `100K`, `1M`, `10G`).                                  |
+|       `interval`       | `string`  |            `1d`             |                                    Time interval for rotation (e.g., `1s`, `1m`, `1h`, `1d`, `1M`).                                    |
 |       `compress`       | `boolean` |           `true`            |                                              Enables gzip compression for rotated files.                                               |
 |      `immutable`       | `boolean` |           `true`            |                                                Prevents modification of rotated files.                                                 |
 |    `retentionDays`     | `number`  |            `30`             |                                  Days to retain logs before deletion (set to `0` to disable cleanup).                                  |
@@ -192,8 +192,8 @@ The transport supports the following timestamp formats for rotated files:
 
 ### Size and Interval Units
 
-- **Size Units**: `K` (KB), `M` (MB), `G` (GB), `T` (TB), `P` (PB), `E` (EB)
-- **Time Units**: `s` (seconds), `m` (minutes), `h` (hours), `d` (days), `w` (weeks), `M` (months), `y` (years)
+- **Size Units**: `B` (Bytes), `K` (KB), `M` (MB), `G` (GB)
+- **Time Units**: `s` (seconds), `m` (minutes), `h` (hours), `d` (days), `M` (months)
 
 ### File Rotation and Events
 

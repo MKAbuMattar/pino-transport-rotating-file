@@ -14,11 +14,11 @@ type CreateErrorLogger = {
   destroy: () => void;
 };
 
-type StorageUnit = 'K' | 'M' | 'G' | 'T' | 'P' | 'E';
-type TimeUnit = 's' | 'm' | 'h' | 'd' | 'w' | 'M' | 'y';
-type Integer = `${0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9}${number | ''}`;
-type Size = `${Integer}${StorageUnit}`;
-type Interval = `${Integer}${TimeUnit}`;
+// Types that match rotating-file-stream expectations
+type StorageUnit = 'B' | 'K' | 'M' | 'G';
+type TimeUnit = 's' | 'm' | 'h' | 'd' | 'M';
+type Size = `${number}${StorageUnit}`;
+type Interval = `${number}${TimeUnit}`;
 type TimestampFormat = 'iso' | 'unix' | 'utc' | 'rfc2822' | 'epoch';
 
 export interface PinoTransportOptions {
@@ -49,11 +49,10 @@ export interface PinoTransportOptions {
  */
 
 /**
- * @typedef {'K' | 'M' | 'G' | 'T' | 'P' | 'E'} StorageUnit
- * @typedef {'s' | 'm' | 'h' | 'd' | 'w' | 'M' | 'y'} TimeUnit
- * @typedef {`${0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9}${number | ''}`} Integer
- * @typedef {`${Integer}${StorageUnit}`} Size
- * @typedef {`${Integer}${TimeUnit}`} Interval
+ * @typedef {'B' | 'K' | 'M' | 'G'} StorageUnit
+ * @typedef {'s' | 'm' | 'h' | 'd' | 'M'} TimeUnit
+ * @typedef {`${number}${StorageUnit}`} Size
+ * @typedef {`${number}${TimeUnit}`} Interval
  * @typedef {'iso' | 'unix' | 'utc' | 'rfc2822' | 'epoch'} TimestampFormat
  */
 
@@ -85,12 +84,10 @@ const pipelineAsync = promisify(pipeline);
  * @description The conversion factor for storage units.
  */
 const sizeUnits: Record<StorageUnit, number> = {
+  B: 1,
   K: 1024,
   M: 1024 ** 2,
   G: 1024 ** 3,
-  T: 1024 ** 4,
-  P: 1024 ** 5,
-  E: 1024 ** 6,
 };
 
 /**
@@ -102,9 +99,7 @@ const timeUnits: Record<TimeUnit, number> = {
   m: 60 * 1000,
   h: 60 * 60 * 1000,
   d: 24 * 60 * 60 * 1000,
-  w: 7 * 24 * 60 * 60 * 1000,
   M: 30 * 24 * 60 * 60 * 1000,
-  y: 365 * 24 * 60 * 60 * 1000,
 };
 
 /**
@@ -114,13 +109,13 @@ const timeUnits: Record<TimeUnit, number> = {
  * @param {Size} size - The size option to validate.
  */
 function validateSize(size: Size): void {
-  const match = /^(\d+)([KMGTPE])$/.exec(size);
+  const match = /^(\d+)([BKMG])$/.exec(size);
   if (!match)
     throw new Error(
-      `Invalid size format: ${size}. Expected format: <number><K|M|G|T|P|E>`,
+      `Invalid size format: ${size}. Expected format: <number><B|K|M|G>`,
     );
   const [_, num, unit] = match;
-  if (Number.parseInt(num) <= 0)
+  if (Number.parseInt(num, 10) <= 0)
     throw new Error(`Size must be positive: ${size}`);
   if (!sizeUnits[unit as StorageUnit])
     throw new Error(`Unknown size unit: ${unit}`);
@@ -133,13 +128,13 @@ function validateSize(size: Size): void {
  * @param {Interval} interval - The interval option to validate.
  */
 function validateInterval(interval: Interval): void {
-  const match = /^(\d+)([smhdwMy])$/.exec(interval);
+  const match = /^(\d+)([smhdM])$/.exec(interval);
   if (!match)
     throw new Error(
-      `Invalid interval format: ${interval}. Expected format: <number><s|m|h|d|w|M|y>`,
+      `Invalid interval format: ${interval}. Expected format: <number><s|m|h|d|M>`,
     );
   const [_, num, unit] = match;
-  if (Number.parseInt(num) <= 0)
+  if (Number.parseInt(num, 10) <= 0)
     throw new Error(`Interval must be positive: ${interval}`);
   if (!timeUnits[unit as TimeUnit])
     throw new Error(`Unknown time unit: ${unit}`);
