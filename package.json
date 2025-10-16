@@ -38,7 +38,7 @@
     "rotating-file-stream": "3.2.7"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.5",
+    "@biomejs/biome": "2.2.6",
     "@rollup/plugin-typescript": "12.1.4",
     "@types/node": "24.7.2",
     "pino": "10.0.0",
