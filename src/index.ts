@@ -1,6 +1,13 @@
 import {Buffer} from 'node:buffer';
 import {createReadStream, createWriteStream} from 'node:fs';
-import {access, readdir, stat, unlink} from 'node:fs/promises';
+import {
+  access,
+  appendFile,
+  mkdir,
+  readdir,
+  stat,
+  unlink,
+} from 'node:fs/promises';
 import {join} from 'node:path';
 import {pipeline, Transform, type TransformCallback} from 'node:stream';
 import {promisify} from 'node:util';
@@ -36,42 +43,6 @@ export interface PinoTransportOptions {
   skipPretty?: boolean;
   errorFlushIntervalMs?: number;
 }
-
-/** @typedef {import('node:stream').TransformCallback} TransformCallback */
-/** @typedef {import('node:zlib').ZlibOptions} ZlibOptions */
-/** @typedef {import('pino-abstract-transport').OnUnknown} OnUnknown */
-/** @typedef {import('rotating-file-stream').RotatingFileStream} RotatingFileStream */
-
-/**
- * @typedef {Object} CreateErrorLogger
- * @property {(message: string, error?: unknown) => void} log - Logs an error message.
- * @property {() => void} destroy - Destroys the error logger.
- */
-
-/**
- * @typedef {'B' | 'K' | 'M' | 'G'} StorageUnit
- * @typedef {'s' | 'm' | 'h' | 'd' | 'M'} TimeUnit
- * @typedef {`${number}${StorageUnit}`} Size
- * @typedef {`${number}${TimeUnit}`} Interval
- * @typedef {'iso' | 'unix' | 'utc' | 'rfc2822' | 'epoch'} TimestampFormat
- */
-
-/**
- * @typedef {Object} PinoTransportOptions
- * @property {string} dir - The directory to store the log files.
- * @property {string} filename - The base filename for the log files.
- * @property {boolean} enabled - Whether the transport is enabled.
- * @property {Size} size - The size at which to rotate the log files.
- * @property {Interval} interval - The interval at which to rotate the log files.
- * @property {boolean} compress - Whether to compress the log files.
- * @property {boolean} immutable - Whether to use immutable log files.
- * @property {number} [retentionDays=30] - The number of days to retain log files.
- * @property {ZlibOptions} [compressionOptions] - The options to use for compression.
- * @property {string} [errorLogFile] - The path to the error log file.
- * @property {TimestampFormat} [timestampFormat='iso'] - The format to use for the timestamp.
- * @property {boolean} [skipPretty=false] - Whether to skip pretty formatting.
- * @property {number} [errorFlushIntervalMs=60000] - The interval at which to flush the error log buffer.
- */
 
 /**
  * @constant {Function} pipelineAsync
@@ -261,7 +232,9 @@ const createErrorLogger = (
     const logMessage = buffer.join('');
     buffer = [];
     if (errorLogFile) {
-      createWriteStream(errorLogFile, {flags: 'a'}).write(logMessage);
+      appendFile(errorLogFile, logMessage).catch((err) => {
+        console.error(`Failed to write error log to ${errorLogFile}:`, err);
+      });
     } else {
       console.error(logMessage);
     }
@@ -439,16 +412,26 @@ export async function pinoTransportRotatingFile(
   } = options;
 
   if (!enabled) {
-    return build((source) => source, {
-      parse: 'lines',
-      expectPinoConfig: true,
-      // @ts-expect-error
-      enablePipelining: false,
-      close() {},
-    });
+    return build(
+      (source) => {
+        // Nothing consumes the stream build() returns when pipelining is
+        // off, so drain the source or every log line is buffered forever.
+        source.resume();
+        // build() ignores the return value; this only satisfies its type.
+        return source;
+      },
+      {
+        parse: 'lines',
+        expectPinoConfig: true,
+        // @ts-expect-error the transport types only allow enablePipelining: true
+        enablePipelining: false,
+        close() {},
+      },
+    );
   }
 
   if (!dir) throw new Error('Missing required option: dir');
+  await mkdir(dir, {recursive: true});
   validateSize(size);
   validateInterval(interval);
   validateTimestampFormat(timestampFormat);
@@ -460,7 +443,13 @@ export async function pinoTransportRotatingFile(
   );
   const rotatingStream: RotatingFileStream = createStream(
     (time) => generator(time, dir, filename, timestampFormat),
-    {size, interval, immutable},
+    {
+      size,
+      // rotating-file-stream accepts s/m/h/d/M at runtime but its types
+      // only declare d/M.
+      interval: interval as `${number}d` | `${number}M`,
+      immutable,
+    },
   );
 
   const compressedFiles = new Map<string, number>();
@@ -504,6 +493,8 @@ export async function pinoTransportRotatingFile(
     );
   }
 
+  const pretty = skipPretty ? undefined : prettyFactory({colorize: false});
+
   return build(
     (source: Transform & OnUnknown) => {
       const prettyStream = skipPretty
@@ -520,7 +511,7 @@ export async function pinoTransportRotatingFile(
                 const logMessage = Buffer.isBuffer(chunk)
                   ? chunk.toString(encoding)
                   : chunk;
-                const prettyLog = prettyFactory({colorize: false})(logMessage);
+                const prettyLog = pretty?.(logMessage);
                 callback(null, prettyLog);
               } catch (error) {
                 callback(
