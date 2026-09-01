@@ -30,7 +30,8 @@
     "lint": "biome check ./src",
     "lint:fix": "biome check --fix ./src",
     "fmt": "biome format ./src",
-    "fmt:fix": "biome format --write ./src"
+    "fmt:fix": "biome format --write ./src",
+    "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
     "pino-abstract-transport": "^3.0.0"
