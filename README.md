@@ -56,6 +56,9 @@ If you're using `pnpm`, run:
 pnpm add pino pino-transport-rotating-file rotating-file-stream pino-pretty
 ```
 
+> [!NOTE]
+> `pino`, `pino-pretty`, and `rotating-file-stream` are peer dependencies, so they must be installed alongside this package. `pino-abstract-transport` ships as a regular dependency and needs no extra install. Peer version ranges: `pino ^10.3.1`, `pino-pretty ^13.1.3`, `rotating-file-stream ^3.2.9`.
+
 ## Usage
 
 Here’s a basic example of integrating the transport with `pino`:
@@ -166,7 +169,7 @@ The transport accepts the following options:
 
 |         Option         |   Type    |        Default Value        |                                                              Description                                                               |
 | :--------------------: | :-------: | :-------------------------: | :------------------------------------------------------------------------------------------------------------------------------------: |
-|         `dir`          | `string`  |        **Required**         |                                               The directory where log files are stored.                                                |
+|         `dir`          | `string`  |        **Required**         |          The directory where log files are stored. Created automatically if missing.          |
 |       `filename`       | `string`  |            `app`            |                                                    The base filename for log files.                                                    |
 |       `enabled`        | `boolean` |           `true`            |                                                    Enable or disable the transport.                                                    |
 |         `size`         | `string`  |           `100K`            |                                 File size threshold for rotation (e.g., `100B`, `100K`, `1M`, `10G`).                                  |
