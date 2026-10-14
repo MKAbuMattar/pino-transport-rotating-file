@@ -34,8 +34,8 @@ importers:
         specifier: 4.62.4
         version: 4.62.4
       rotating-file-stream:
-        specifier: 3.2.9
-        version: 3.2.9
+        specifier: 3.2.10
+        version: 3.2.10
       tslib:
         specifier: 2.8.1
         version: 2.8.1
@@ -585,8 +585,8 @@ packages:
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
-  rotating-file-stream@3.2.9:
-    resolution: {integrity: sha512-i9i0KkHh12ryl4xtELg+0gyoFre2PJ9RcQQLzquWsiqygyYsrZLckrqqYrthhnJZGZb4g+KUHtcoWYVq34gaug==}
+  rotating-file-stream@3.2.10:
+    resolution: {integrity: sha512-9kviflu1v0iTD3MNoRLjPuuqLTsTOrovKdadoSYcUsgY5mKFNuhcM7WifJcwvxfIP6YJdVVxgWQr9YS3lJS+bg==}
     engines: {node: '>=14.0'}
 
   safe-stable-stringify@2.5.0:
@@ -1051,7 +1051,7 @@ snapshots:
       '@rollup/rollup-win32-x64-msvc': 4.62.4
       fsevents: 2.3.3
 
-  rotating-file-stream@3.2.9: {}
+  rotating-file-stream@3.2.10: {}
 
   safe-stable-stringify@2.5.0: {}
 
